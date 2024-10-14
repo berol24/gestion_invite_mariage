@@ -1,0 +1,40 @@
+.search{
+    border: 2px solid red;
+    width: 40%;
+    float: right;
+    margin: 50px;
+    
+}
+
+.search form{
+    display: flex;
+    justify-content: space-between;
+}
+
+.input_search{
+    width: 80%;
+    font-size: 20px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
