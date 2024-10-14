@@ -7,12 +7,17 @@ function Header() {
       <div className="logo">
         <img src="../../images/logo_factory.png" className="logoApp" alt="image_marié" />
       </div>
-
+    
       <div className="nav">
         <ul class="navbar">
           <li class="nav-item">
             <a class="nav-link active" href="/" rel="noopener noreferrer">
               Accueil
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/createInvites" rel="noopener noreferrer" >
+            create Invite
             </a>
           </li>
           <li class="nav-item">
