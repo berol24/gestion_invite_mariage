@@ -1,21 +1,95 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../Header/Header";
 import "../../styles/GestionInvites_css/GestionInvites.css";
 import "../../styles/MesInvites_css/MesInvites.css";
+import postService from "../../services/postService";
+import UpdateModalComponent from "../UpdateInvites/UpdateInvites";
+
+import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css"; // css boostrap
+import { Button } from "react-bootstrap";
 
 function GestionInvites() {
+  const [posts, setPosts] = useState({});
+  const [name, setName] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+
+  const fetchPosts = async () => {
+    setPosts(await postService.getPosts());
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  /// delete post
+  const deletePost = async (id, e) => {
+    var response = await postService.deletePost(id);
+    if (response.data.success === true) {
+      alert(response.data.msg);
+      document.getElementById(id).parentElement.parentElement.remove();
+    } else {
+      alert(response.data.msg);
+    }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!posts.data?.data) return; // Si les données ne sont pas encore chargées, ne rien faire
+
+    const isNumeric = (str) => /^\d+$/.test(str);
+
+    const filter = posts.data.data.filter((item) => {
+      if (isNumeric(name)) {
+        return item.telephone.toString().includes(name);
+      } else {
+        return item.nomPrenom.toLowerCase().includes(name.toLowerCase());
+      }
+    });
+
+    setFilteredData(filter); // Met à jour l'état avec les résultats filtrés
+  };
+
+  // Fonction pour afficher toutes les données ou les résultats filtrés
+  const getDisplayedData = () => {
+    // Si aucune recherche n'est en cours (name est vide), afficher toutes les données
+    if (name === "") {
+      return posts.data?.data || []; // Retourner toutes les données si chargées
+    }
+
+    // Si recherche faite mais aucun résultat trouvé
+    if (filteredData.length === 0) {
+      return [];
+    }
+
+    return filteredData; // Sinon retourner les résultats filtrés
+  };
+
+  const displayedData = getDisplayedData();
+
+
+
+  // Fonction pour gérer la touche "Enter" pour déclencher la recherche
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSubmit(event); // Lancer la recherche avec "Enter"
+    }
+  };
+
   return (
     <div>
       <Header />
 
       <div className="search">
-        <form>
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             className="input_search"
-
-            // onChange={(e) => setName(e.target.value)}
-            // onKeyDown={handleKeyDown}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Rechercher par nom ou téléphone"
           />
           <button type="submit">
             <img src="../../images/icon_search.svg" alt="icon_search" />
@@ -23,126 +97,80 @@ function GestionInvites() {
         </form>
       </div>
 
-      <table>
-        <tr>
-          <th>PHOTO</th>
-          <th>ID INVITE</th>
-          <th>NOMS ET PRENOMS</th>
-          <th>TELEPHONE</th>
-          <th>TABLE</th>
-          <th>STATUS</th>
-          <th>ACTIONS</th>
-        </tr>
-        <br />
-        <tr>
-          <td style={{ width: "50px", height: "50px" }}>
-            <img
-              src="../../images/fleur.jpg"
-              className="logoApp"
-              alt="image_marié"
-              style={{
-                borderRadius: "50px",
-                border: "1px solid red",
-                width: "100%",
-              }}
-            />
-          </td>
-          <td>983562816</td>
-          <td>Alexia Daniella</td>
-          <td>123456789</td>
-          <td>Marc</td>
-          <td>P</td>
-          <td style={{ textAlign: "center" }}>
-            <a href="#" style={{ marginRight: "50px", color: "green" }}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="30"
-                height="30"
-                fill="currentColor"
-                class="bi bi-pencil-square"
-                viewBox="0 0 16 16"
-              >
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                <path
-                  fill-rule="evenodd"
-                  d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
-                />
-              </svg>
-            </a>
-            <a
-              href="#"
-              style={{
-                color: "red",
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="30"
-                height="30"
-                fill="currentColor"
-                class="bi bi-trash3-fill"
-                viewBox="0 0 16 16"
-              >
-                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-              </svg>
-            </a>
-          </td>
-        </tr>
-        <tr>
-          <td style={{ width: "50px", height: "50px" }}>
-            <img
-              src="../../images/fleur.jpg"
-              className="logoApp"
-              alt="image_marié"
-              style={{
-                borderRadius: "50px",
-                border: "1px solid red",
-                width: "100%",
-              }}
-            />
-          </td>
-          <td>68545955</td>
-          <td>ALEX DANIEL</td>
-          <td>165674626</td>
-          <td>Jean</td>
-          <td>P</td>
-          <td style={{ textAlign: "center" }}>
-            <a href="#" style={{ marginRight: "50px", color: "green" }}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="30"
-                height="30"
-                fill="currentColor"
-                class="bi bi-pencil-square"
-                viewBox="0 0 16 16"
-              >
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                <path
-                  fill-rule="evenodd"
-                  d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
-                />
-              </svg>
-            </a>
-            <a
-              href="#"
-              style={{
-                color: "red",
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="30"
-                height="30"
-                fill="currentColor"
-                class="bi bi-trash3-fill"
-                viewBox="0 0 16 16"
-              >
-                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-              </svg>
-            </a>
-          </td>
-        </tr>
-      </table>
+      {displayedData.length > 0 ? (
+        <table>
+          <thead>
+            <tr>
+              <th>PHOTO</th>
+              <th>ID INVITE</th>
+              <th>NOMS ET PRENOMS</th>
+              <th>TELEPHONE</th>
+              <th>TABLE</th>
+              <th>STATUS</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            {displayedData.map((post) => (
+              <tr key={post._id}>
+                <td style={{ width: "50px", height: "50px" }}>
+                  <img
+                    src={`http://localhost:8000/api/postImages/${post.image}`}
+                    className="logoApp"
+                    alt={`photo_${post.nomPrenom}`}
+                    style={{
+                      borderRadius: "50px",
+                      border: "1px solid red",
+                      width: "100%",
+                    }}
+                  />
+                </td>
+                <td>983562816</td>
+                <td>{post.nomPrenom}</td>
+                <td>{post.telephone}</td>
+                <td>{post.table}</td>
+                <td>{post.status}</td>
+                <td style={{ display: "flex", textAlign: "center" }}>
+                  <UpdateModalComponent
+                    id={post._id}
+                    nomPrenom={post.nomPrenom}
+                    telephone={post.telephone}
+                    table={post.table}
+                    status={post.status}
+                  />
+                  <Button
+                    id={post._id}
+                    onClick={(e) => deletePost(post._id, e)}
+                    style={{
+                      color: "red",
+                      background: "white",
+                      border: "none",
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="30"
+                      height="30"
+                      fill="currentColor"
+                      className="bi bi-trash3-fill"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+                    </svg>
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div style={{textAlign: "center"}}>Pas de résultat</div>
+      )}
+
+      <br />
+      <br />
+      <br />
+      <hr />
     </div>
   );
 }

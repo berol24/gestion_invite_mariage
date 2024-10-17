@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import "../../styles/CreateInvites_css/CreateInvites.css";
 import Header from "../Header/Header";
+import postService from "../../services/postService";
 function CreateInvites() {
   const [formData, setFormData] = useState({
     nomPrenom: "",
     telephone: "",
     table: "",
     status: "",
-    image: null,
+    image: "",
   });
+
+  const [message ,setMessage] = useState('')
 
   const handleChange = (e) => {
     if (e.target.type === "file") {
@@ -29,18 +32,41 @@ function CreateInvites() {
     data.append("status", formData.status);
     data.append("image", formData.image); // Ajouter l'image à la requête
 
-    try {
-      const response = await fetch("http://localhost:5000/addInvites", {
-        method: "POST",
-        body: data,
-      });
 
-      const result = await response.json();
-      console.log(result.message);
-    } catch (error) {
-      console.error("Erreur lors de l'envoi du formulaire", error);
+
+
+    const response = await postService.create(data);
+    if (response.data.success == true) {
+        console.log(response);
+        setMessage("Post created successfully")
+    }else{
+        setMessage("Post Failed") 
     }
+
+    setTimeout(() => {
+       setMessage('') 
+    }, 3000);
+    
+    window.location.href = "/gestionInvites"
+    e.target.reset();  // vide le formulaire
+
+
+
+  //   try {
+  //     const response = await fetch("http://localhost:8000/addInvites", {
+  //       method: "POST",
+  //       body: data,
+  //     });
+
+  //     const result = await response.json();
+  //     console.log(result.message);
+  //   } catch (error) {
+  //     console.error("Erreur lors de l'envoi du formulaire", error);
+  //   }
   };
+
+
+
 
   return (
     <div>
@@ -99,6 +125,8 @@ function CreateInvites() {
           </button>
         </div>
       </form>
+
+      <p>{message}</p>
     </div>
   );
 }

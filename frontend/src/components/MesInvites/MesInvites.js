@@ -1,8 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../Header/Header";
+import "../../styles/GestionInvites_css/GestionInvites.css";
 import "../../styles/MesInvites_css/MesInvites.css";
+import postService from "../../services/postService";
 
-function MesInvites() {
+function GestionInvites() {
+
+  const [posts, setPosts] = useState({});
+
+  const fetchPosts = async () => {
+    setPosts(await postService.getPosts());
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  console.log(posts.data);
+
+
+
   return (
     <div>
       <Header />
@@ -12,7 +29,7 @@ function MesInvites() {
           <input
             type="text"
             className="input_search"
-           
+
             // onChange={(e) => setName(e.target.value)}
             // onKeyDown={handleKeyDown}
           />
@@ -23,8 +40,7 @@ function MesInvites() {
       </div>
 
 
-
-
+      {posts.data !== undefined  && posts.data.data.length > 0  && (
       <table>
         <tr>
           <th>PHOTO</th>
@@ -35,12 +51,16 @@ function MesInvites() {
           <th>STATUS</th>
         </tr>
         <br />
+ <tbody>
+
+ {posts.data.data.map((post) => (
+
         <tr>
           <td style={{ width: "50px", height: "50px" }}>
             <img
-              src="../../images/fleur.jpg"
+              src={"http://localhost:8000/api/postImages/"+ post.image}
               className="logoApp"
-              alt="image_marié"
+              alt={"photo_" + post.nomPrenom}
               style={{
                 borderRadius: "50px",
                 border: "1px solid red",
@@ -49,33 +69,21 @@ function MesInvites() {
             />
           </td>
           <td>983562816</td>
-          <td>Alexia Daniella</td>
-          <td>123456789</td>
-          <td>Marc</td>
-          <td>P</td>
+          <td>{post.nomPrenom}</td>
+          <td>{post.telephone}</td>
+          <td>{post.table}</td>
+          <td>{post.status}</td>
         </tr>
-        <tr>
-          <td style={{ width: "50px", height: "50px" }}>
-            <img
-              src="../../images/fleur.jpg"
-              className="logoApp"
-              alt="image_marié"
-              style={{
-                borderRadius: "50px",
-                border: "1px solid red",
-                width: "100%",
-              }}
-            />
-          </td>
-          <td>68545955</td>
-          <td>ALEX DANIEL</td>
-          <td>165674626</td>
-          <td>Jean</td>
-          <td>A</td>
-        </tr>
-      </table>
+
+
+))}
+</tbody>
+       
+
+
+      </table>)}
     </div>
   );
 }
 
-export default MesInvites;
+export default GestionInvites;
