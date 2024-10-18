@@ -30,11 +30,11 @@ function Header() {
               Gestion des invités
             </a>
           </li>
-          <li class="nav-item">
+          {/* <li class="nav-item">
             <a class="nav-link" href="/updateInvites" rel="noopener noreferrer">
-            updateInvites
+            details invites
             </a>
-          </li>
+          </li> */}
         </ul>
       </div>
     </div>

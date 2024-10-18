@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 
 class Post {
+  
   create(formData) {
     const url = "http://localhost:8000/api/create-post";
     const config = {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Header from "../Header/Header";
+
 // import "../../styles/UpdateInvites_css/UpdateInvites.css";
 import { Modal, Button } from "react-bootstrap";
 import postService from "../../services/postService";

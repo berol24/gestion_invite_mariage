@@ -9,7 +9,7 @@ const createPost = async (req, res) => {
       telephone: req.body.telephone,
       table: req.body.table,
       status: req.body.status,
-      image: req.file.filename,
+      image: req.file !== undefined ? req.file.filename : null
     });
 
     const postData = await post.save();

@@ -81,6 +81,7 @@ function CreateInvites() {
               className="form-control-create nom-prenom"
               name="nomPrenom"
               placeholder={"Alexia Daniel"}
+              required
             />
           </div>
           <div className="form-text">
@@ -90,6 +91,7 @@ function CreateInvites() {
               className="form-control-create telephone"
               name="telephone"
               placeholder={"123456789"}
+              required
             />
           </div>
           <div className="form-text">
@@ -99,6 +101,7 @@ function CreateInvites() {
               className="form-control-create table"
               name="table"
               placeholder={"Marc"}
+              required
             />
           </div>
           <div className="form-text">
@@ -108,6 +111,7 @@ function CreateInvites() {
               className="form-control-create status"
               name="status"
               placeholder={"P"}
+              required
             />
           </div>
 
@@ -117,6 +121,7 @@ function CreateInvites() {
               type="file"
               className="form-control-create image_invite"
               name="image"
+              required
             />
           </div>
 

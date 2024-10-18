@@ -3,23 +3,43 @@ import Header from "../Header/Header";
 import "../../styles/GestionInvites_css/GestionInvites.css";
 import "../../styles/MesInvites_css/MesInvites.css";
 import postService from "../../services/postService";
-import UpdateModalComponent from "../UpdateInvites/UpdateInvites";
-
-import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css"; // css boostrap
+import UpdateModalComponent from "../UpdateModalComponent/UpdateModalComponent";
 import { Button } from "react-bootstrap";
 
+import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+
 function GestionInvites() {
-  const [posts, setPosts] = useState({});
-  const [name, setName] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchPosts = async () => {
-    setPosts(await postService.getPosts());
+    const response = await postService.getPosts();
+    setPosts(response.data.data); // Charger tous les posts
+    setFilteredPosts(response.data.data); // Initialement, tous les posts sont affichés
   };
 
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    const isNumeric = (str) => /^\d+$/.test(str);
+
+    // Filtrer les posts en fonction du nom ou prénom qui correspond à searchTerm
+    const filtered = posts.filter((post) => {
+      if (isNumeric(searchTerm)) {
+        return post.telephone.toString().includes(searchTerm);
+      } else {
+        return post.nomPrenom.toLowerCase().includes(searchTerm.toLowerCase());
+      }
+    });
+    setFilteredPosts(filtered);
+  };
+
+
 
   /// delete post
   const deletePost = async (id, e) => {
@@ -32,64 +52,17 @@ function GestionInvites() {
     }
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (!posts.data?.data) return; // Si les données ne sont pas encore chargées, ne rien faire
-
-    const isNumeric = (str) => /^\d+$/.test(str);
-
-    const filter = posts.data.data.filter((item) => {
-      if (isNumeric(name)) {
-        return item.telephone.toString().includes(name);
-      } else {
-        return item.nomPrenom.toLowerCase().includes(name.toLowerCase());
-      }
-    });
-
-    setFilteredData(filter); // Met à jour l'état avec les résultats filtrés
-  };
-
-  // Fonction pour afficher toutes les données ou les résultats filtrés
-  const getDisplayedData = () => {
-    // Si aucune recherche n'est en cours (name est vide), afficher toutes les données
-    if (name === "") {
-      return posts.data?.data || []; // Retourner toutes les données si chargées
-    }
-
-    // Si recherche faite mais aucun résultat trouvé
-    if (filteredData.length === 0) {
-      return [];
-    }
-
-    return filteredData; // Sinon retourner les résultats filtrés
-  };
-
-  const displayedData = getDisplayedData();
-
-
-
-  // Fonction pour gérer la touche "Enter" pour déclencher la recherche
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      handleSubmit(event); // Lancer la recherche avec "Enter"
-    }
-  };
-
   return (
     <div>
       <Header />
 
       <div className="search">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSearch}>
           <input
             type="text"
             className="input_search"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Rechercher par nom ou téléphone"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)} // Mettre à jour searchTerm lors de la saisie
           />
           <button type="submit">
             <img src="../../images/icon_search.svg" alt="icon_search" />
@@ -97,27 +70,30 @@ function GestionInvites() {
         </form>
       </div>
 
-      {displayedData.length > 0 ? (
+      {filteredPosts.length > 0 ? (
         <table>
           <thead>
             <tr>
               <th>PHOTO</th>
               <th>ID INVITE</th>
-              <th>NOMS ET PRENOMS</th>
-              <th>TELEPHONE</th>
+              <th>NOMS ET PRÉNOMS</th>
+              <th>TÉLÉPHONE</th>
               <th>TABLE</th>
-              <th>STATUS</th>
-              <th>ACTIONS</th>
+              <th>STATUT</th>
+              <th style={{textAlign: "center"}}>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
-            {displayedData.map((post) => (
-              <tr key={post._id}>
+            {filteredPosts.map((post) => (
+              <tr key={post.id}>
                 <td style={{ width: "50px", height: "50px" }}>
                   <img
-                    src={`http://localhost:8000/api/postImages/${post.image}`}
+                    src={"http://localhost:8000/api/postImages/" + post.image}
+                    onError={(e) =>
+                      (e.target.src = "/path/to/default/image.jpg")
+                    } // Gérer une image par défaut si l'image est manquante
                     className="logoApp"
-                    alt={`photo_${post.nomPrenom}`}
+                    alt={"photo_" + post.nomPrenom}
                     style={{
                       borderRadius: "50px",
                       border: "1px solid red",
@@ -125,12 +101,12 @@ function GestionInvites() {
                     }}
                   />
                 </td>
-                <td>983562816</td>
+                <td>{post.id}</td>
                 <td>{post.nomPrenom}</td>
                 <td>{post.telephone}</td>
                 <td>{post.table}</td>
                 <td>{post.status}</td>
-                <td style={{ display: "flex", textAlign: "center" }}>
+                <td style={{ display: "flex", justifyContent: 'center' , textAlign: "center" }}>
                   <UpdateModalComponent
                     id={post._id}
                     nomPrenom={post.nomPrenom}
@@ -164,13 +140,13 @@ function GestionInvites() {
           </tbody>
         </table>
       ) : (
-        <div style={{textAlign: "center"}}>Pas de résultat</div>
+        <div
+          className="invite_non_trouve"
+          style={{ textAlign: "center", marginTop: "20px" }}
+        >
+          <div>Aucun invité trouvé.</div>
+        </div>
       )}
-
-      <br />
-      <br />
-      <br />
-      <hr />
     </div>
   );
 }
