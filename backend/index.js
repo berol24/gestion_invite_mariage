@@ -9,8 +9,8 @@ const cors = require('cors')
 app.use(cors({
     // origin: "*",
     origin: "https://gestion-invite-mariage.vercel.app",
-    methods: ['POST' ,"GET"],
-    credentials : true
+    // methods: ['POST' ,"GET"],
+    // credentials : true
 }));
 
 const mongoose =  require('mongoose')
@@ -21,7 +21,10 @@ dotenv.config({ path: './.env' });
 const PORT = process.env.PORT || 4000
 const MONGODB_URL = process.env.MONGO_URL
 
-mongoose.connect(MONGODB_URL)
+mongoose.connect(MONGODB_URL , {
+  useNewUrlParser: true,  // Options pour éviter les avertissements
+  useUnifiedTopology: true
+})
 .then(() => {
     console.log("connection avec mongoDB effectué avec succès");
   })
