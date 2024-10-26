@@ -7,8 +7,8 @@ const cors = require('cors')
 
 
 app.use(cors({
-    // origin: "*",
-    origin: "https://gestion-invite-mariage.vercel.app",
+     origin: "*",
+    // origin: "https://gestion-invite-mariage.vercel.app",
     // methods: ['POST' ,"GET"],
     // credentials : true
 }));
