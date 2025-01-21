@@ -6,7 +6,8 @@ import Header from "../Header/Header";
 function DetailsInvites() {
   const { id } = useParams(); // Récupérer l'ID depuis l'URL
   const [invite, setInvite] = useState(null);
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+  // const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+   const API_URL = "http://localhost:8000";
 
 
   useEffect(() => {
@@ -54,7 +55,7 @@ function DetailsInvites() {
                 <div className="mb-4">
                   <img
                     src={`${API_URL}/api/postImages/` + invite.image}
-                    alt={`Photo de ${invite.nomPrenom}`}
+                    alt={`${invite.nomPrenom}`}
                     className="img-thumbnail rounded-circle"
                     style={{ width: "150px", height: "150px" }}
                   />

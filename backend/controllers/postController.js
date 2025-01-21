@@ -11,7 +11,7 @@ const createPost = async (req, res) => {
       status: req.body.status,
       image: req.file !== undefined ? req.file.filename : null
     });
-
+ 
     const postData = await post.save();
 
     res.status(200).send({ success: true, msg: "Invite Data", data: postData });

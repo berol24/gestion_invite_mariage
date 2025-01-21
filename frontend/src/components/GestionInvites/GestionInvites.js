@@ -13,7 +13,8 @@ function GestionInvites() {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+  // const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+  const API_URL =  "http://localhost:8000";
 
   const fetchPosts = async () => {
     const response = await postService.getPosts();
@@ -87,6 +88,7 @@ function GestionInvites() {
           </thead>
           <tbody>
             {filteredPosts.map((post) => (
+              
               <tr key={post.id}>
                 <td style={{ width: "50px", height: "50px" }}>
                   <img 

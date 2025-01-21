@@ -30,13 +30,13 @@ function UpdateModalComponent(props) {
     formData.append("table", table);
     formData.append("status", status);
 
-    if (selectedFile != "" && selectedFile.length != 0) {
+    if (selectedFile !== "" && selectedFile.length !== 0) {
       formData.append("image", selectedFile);
     }
 
     const response = await postService.update(formData);
 
-    if (response.data.success == true) {
+    if (response.data.success === true) {
       alert(response.data.msg);
       console.log(response);
 
@@ -50,8 +50,7 @@ function UpdateModalComponent(props) {
 
   return (
     <div>
-      <h1></h1>
-
+  
       <Button variant="success" onClick={initModal}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
