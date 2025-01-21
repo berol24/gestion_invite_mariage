@@ -8,6 +8,9 @@ function MesInvites() {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
+
 
   const fetchPosts = async () => {
     const response = await postService.getPosts();
@@ -76,11 +79,11 @@ function MesInvites() {
             {filteredPosts.map((post) => (
               <tr key={post.id}>
                 <td style={{ width: "50px", height: "50px" }}>
-                  <img
-                    src={"http://localhost:8000/api/postImages/" + post.image}
-                    onError={(e) =>
-                      (e.target.src = "/path/to/default/image.jpg")
-                    } // Gérer une image par défaut si l'image est manquante
+                  <img 
+                    src={`${API_URL}/api/postImages/` + post.image}
+                    // onError={(e) =>
+                    //   (e.target.src = "/path/to/default/image.jpg")
+                    // } // Gérer une image par défaut si l'image est manquante
                     className="logoApp"
                     alt={"photo_" + post.nomPrenom}
                     style={{

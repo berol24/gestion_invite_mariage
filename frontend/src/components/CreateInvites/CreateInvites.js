@@ -36,7 +36,7 @@ function CreateInvites() {
 
 
     const response = await postService.create(data);
-    if (response.data.success == true) {
+    if (response.data.success === true) {
         console.log(response);
         setMessage("Post created successfully")
     }else{

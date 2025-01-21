@@ -2,9 +2,12 @@ import React from "react";
 import axios from "axios";
 
 class Post {
-  
+
+
   create(formData) {
-    const url = "http://localhost:8000/api/create-post";
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
+    const url = `${API_URL}/api/create-post`;
     const config = {
       headers: {
         "content-type": "multipart/form-data",
@@ -16,7 +19,9 @@ class Post {
 
 
   getPosts(){
-    const url = "http://localhost:8000/api/get-posts";
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
+    const url = `${API_URL}/api/get-posts`;
 
     return axios.get(url);
 
@@ -24,7 +29,9 @@ class Post {
 
 
   deletePost(id){
-    const url = "http://localhost:8000/api/delete-post/"+id; /// https://formation-node-mongodb-api.vercel.app est remplacé par localhost:8000 pour lire en local
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
+    const url = `${API_URL}/api/delete-post/`+id; /// https://formation-node-mongodb-api.vercel.app est remplacé par localhost:8000 pour lire en local
 
     return axios.get(url);
 
@@ -32,7 +39,9 @@ class Post {
 
 
   update(formData) {
-    const url = "http://localhost:8000/api/update-post";
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
+    const url = `${API_URL}/api/update-post`;
     const config = {
       headers: {
         "content-type": "multipart/form-data",

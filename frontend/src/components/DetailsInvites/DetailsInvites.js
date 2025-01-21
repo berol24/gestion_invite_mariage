@@ -6,6 +6,8 @@ import Header from "../Header/Header";
 function DetailsInvites() {
   const { id } = useParams(); // Récupérer l'ID depuis l'URL
   const [invite, setInvite] = useState(null);
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
 
   useEffect(() => {
     const fetchInviteDetails = async () => {
@@ -35,54 +37,55 @@ function DetailsInvites() {
     return <div>Chargement des détails de l'invité...</div>;
   }
 
-  return (       
+  return (
     <>
-    <Header/>
-    <div className="container my-5">
+      <Header />
+      <div className="container my-5">
+        <div className="row justify-content-center">
+          <div className="col-md-8">
+            <div className="card shadow-lg">
+              <div className="card-header text-center bg-dark text-white py-4">
+                <h2 className="mb-0">Bienvenue au mariage</h2>
+                <h2 className="mb-0">de</h2>
+                <h2 className="mb-0">Steph et Alexia</h2>
+              </div>
 
-    <div className="row justify-content-center">
-      <div className="col-md-8">
-        <div className="card shadow-lg">
-          <div className="card-header text-center bg-dark text-white py-4">
-            <h2 className="mb-0">Bienvenue au mariage</h2>
-            <h2 className="mb-0">de</h2>
-            <h2 className="mb-0">Steph et Alexia</h2>
-          </div>
-  
-          <div className="card-body text-center py-4">
-            <div className="mb-4">
-              <img
-                src={"http://localhost:8000/api/postImages/" + invite.image}
-                alt={`Photo de ${invite.nomPrenom}`}
-                className="img-thumbnail rounded-circle"
-                style={{ width: "150px", height: "150px" }}
-              />
+              <div className="card-body text-center py-4">
+                <div className="mb-4">
+                  <img
+                    src={`${API_URL}/api/postImages/` + invite.image}
+                    alt={`Photo de ${invite.nomPrenom}`}
+                    className="img-thumbnail rounded-circle"
+                    style={{ width: "150px", height: "150px" }}
+                  />
+                </div>
+
+                <div className="invite-details">
+                  <p className="lead">
+                    <strong>ID :</strong> {invite._id}
+                  </p>
+                  <p className="lead">
+                    <strong>Nom et Prénom :</strong> {invite.nomPrenom}
+                  </p>
+                  <p className="lead">
+                    <strong>Téléphone :</strong> {invite.telephone}
+                  </p>
+                  <p className="lead">
+                    <strong>Table :</strong> {invite.table}
+                  </p>
+                </div>
+              </div>
+
+              <div className="card-footer text-center bg-light py-3">
+                <p className="text-muted mb-0">
+                  Nous sommes heureux de vous accueillir !
+                </p>
+              </div>
             </div>
-  
-            <div className="invite-details">
-              <p className="lead">
-                <strong>ID :</strong> {invite._id}
-              </p>
-              <p className="lead">
-                <strong>Nom et Prénom :</strong> {invite.nomPrenom}
-              </p>
-              <p className="lead">
-                <strong>Téléphone :</strong> {invite.telephone}
-              </p>
-              <p className="lead">
-                <strong>Table :</strong> {invite.table}
-              </p>
-            </div>
-          </div>
-  
-          <div className="card-footer text-center bg-light py-3">
-            <p className="text-muted mb-0">Nous sommes heureux de vous accueillir !</p>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  </>
+    </>
   );
 }
 

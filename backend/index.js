@@ -18,7 +18,8 @@ const mongoose =  require('mongoose')
 // connexion à la base de données
 dotenv.config({ path: './.env' });
 
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 8000
+
 const MONGODB_URL = process.env.MONGO_URL
 
 mongoose.connect(MONGODB_URL , {
